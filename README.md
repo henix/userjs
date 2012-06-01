@@ -1,5 +1,11 @@
+# henix's userscripts
+This is the source codes of [henix's userscripts](http://userscripts.org/users/435708).
+
 ## Dependency
 Flower.js
 
 ## Build
-make
+    git clone https://henix@github.com/henix/flower.js.git Flower.js
+    git clone https://henix@github.com/henix/userjs.git
+    cd userjs
+    make
