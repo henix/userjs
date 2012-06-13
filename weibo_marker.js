@@ -2,14 +2,18 @@
 // @name			Weibo Bookmark
 // @description		You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author			henix
-// @version			0.3
+// @version			0.4
 // @include			http://weibo.com/*
+// @include			http://www.weibo.com/*
 // @updateURL		http://userscripts.org/scripts/source/126882.user.js
 // @license			MIT License
 // ==/UserScript==
 
 /**
  * ChangeLog:
+ *
+ * 2012-6-14	henix
+ * 		Add www.weibo.com
  *
  * 2012-5-30	henix
  * 		Fix the bug that you can not add marker on Chrome sometimes.
