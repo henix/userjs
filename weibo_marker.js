@@ -2,7 +2,7 @@
 // @name			Weibo Bookmark
 // @description		You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author			henix
-// @version			0.4
+// @version			0.5
 // @include			http://weibo.com/*
 // @include			http://www.weibo.com/*
 // @updateURL		http://userscripts.org/scripts/source/126882.user.js
@@ -11,6 +11,13 @@
 
 /**
  * ChangeLog:
+ *
+ * 2012-7-11	henix
+ * 		Fix the bug that can't add marker just upon "XX分钟前，你看到这里".
+ *
+ * 		Weibo will add a style dl.W_no_border which has a higher priority than ".feedmarker",
+ * 		so my style on border will be never applied.
+ * 		Change ".feedmarker" to "dl.feedmarker" can fix this bug.
  *
  * 2012-6-14	henix
  * 		Add www.weibo.com
@@ -88,7 +95,7 @@ function markOld() {
 	}
 }
 
-csser.insertSheet('.feedmarker, .feedmarker-old {border: 1px dashed black} .feedmarker {border-top: 20px solid #ccc} .feedmarker-old {border-top: 20px solid #ff6}');
+csser.insertSheet('dl.feedmarker, dl.feedmarker-old {border: 1px dashed black} dl.feedmarker {border-top: 20px solid #ccc} dl.feedmarker-old {border-top: 20px solid #ff6}');
 oldId = localStorage.getItem('feedmarkid');
 
 function addClickHandler() {
