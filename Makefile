@@ -1,4 +1,4 @@
-FILES := douban_feedmark.user.js weibo_marker.user.js
+FILES := douban_feedmark.user.js weibo_marker.user.js NoBrighter.user.js
 
 all: $(FILES)
 
