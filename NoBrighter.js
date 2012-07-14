@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.1
+// @version			0.2
 // @include			*
 // @updateURL		http://userscripts.org/scripts/source/138275.user.js
 // @license			MIT License
@@ -11,11 +11,16 @@
 /**
  * ChangeLog:
  *
+ * 2012-7-14	henix
+ * 		Use css stylesheet to set body's default background-color
+ *
  * 2012-7-12	henix
  * 		Version 0.1
  */
 
-function changeBgcolor(elem, allowTrans) {
+#include "csser.js"
+
+function changeBgcolor(elem) {
 	if (elem.nodeType !== Node.ELEMENT_NODE) {
 		return;
 	}
@@ -32,20 +37,19 @@ function changeBgcolor(elem, allowTrans) {
 		if (brightness > 0.94) {
 			elem.style.backgroundColor = '#C7EDCC';
 		}
-	} else if (!allowTrans) {
-		elem.style.backgroundColor = '#C7EDCC';
 	}
 }
+
+csser.prependSheet('body { background-color: #C7EDCC; }');
 
 var alltags = document.getElementsByTagName("*");
 
 function changeAll() {
 	var len = alltags.length;
 	for (var i = 0; i < len; i++) {
-		changeBgcolor(alltags[i], true);
+		changeBgcolor(alltags[i]);
 	}
 }
-changeBgcolor(document.body, false);
 changeAll();
 
 var longRunSites = [/^http:\/\/(www.)?weibo.com\//];
