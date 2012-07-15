@@ -2,14 +2,21 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.2
+// @version			0.3
 // @include			*
+// @exclude			http://boards.4chan.org/*
+// @exclude			https://boards.4chan.org/*
 // @updateURL		http://userscripts.org/scripts/source/138275.user.js
 // @license			MIT License
 // ==/UserScript==
 
 /**
  * ChangeLog:
+ *
+ * 2012-7-15	henix
+ *		Exclude boards.4chan.org
+ *
+ *		Because users could choose their own style from 4chan which loads after NoBrighter
  *
  * 2012-7-14	henix
  * 		Add changeTransparent()
