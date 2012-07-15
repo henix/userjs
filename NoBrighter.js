@@ -12,6 +12,9 @@
  * ChangeLog:
  *
  * 2012-7-14	henix
+ * 		Add changeTransparent()
+ *
+ * 2012-7-14	henix
  * 		Use css stylesheet to set body's default background-color
  *
  * 2012-7-12	henix
@@ -19,6 +22,8 @@
  */
 
 #include "csser.js"
+
+var targetColor = '#C7EDCC';
 
 function changeBgcolor(elem) {
 	if (elem.nodeType !== Node.ELEMENT_NODE) {
@@ -35,12 +40,19 @@ function changeBgcolor(elem) {
 		var brightness = (Math.max(r, g, b) + Math.min(r, g, b)) / 255 / 2;
 
 		if (brightness > 0.94) {
-			elem.style.backgroundColor = '#C7EDCC';
+			elem.style.backgroundColor = targetColor;
 		}
 	}
 }
 
-csser.prependSheet('body { background-color: #C7EDCC; }');
+function changeTransparent(elem) {
+	var bgcolor = window.getComputedStyle(elem, null).backgroundColor;
+	if (!bgcolor || bgcolor === 'transparent' || bgcolor.replace(' ', '') === 'rgba(0,0,0,0)') {
+		elem.style.backgroundColor = targetColor;
+	}
+}
+
+csser.prependSheet('body { background-color: ' + targetColor + '; }');
 
 var alltags = document.getElementsByTagName("*");
 
@@ -51,6 +63,7 @@ function changeAll() {
 	}
 }
 changeAll();
+changeTransparent(document.body);
 
 var longRunSites = [/^http:\/\/(www.)?weibo.com\//];
 
