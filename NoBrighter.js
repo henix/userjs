@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.3
+// @version			0.4
 // @include			*
 // @exclude			http://boards.4chan.org/*
 // @exclude			https://boards.4chan.org/*
@@ -12,6 +12,9 @@
 
 /**
  * ChangeLog:
+ *
+ * 2012-7-19	henix
+ * 		Remove prependSheet because it may clash with <body bgcolor="XX">
  *
  * 2012-7-15	henix
  *		Exclude boards.4chan.org
@@ -27,8 +30,6 @@
  * 2012-7-12	henix
  * 		Version 0.1
  */
-
-#include "csser.js"
 
 var targetColor = '#C7EDCC';
 
@@ -54,12 +55,10 @@ function changeBgcolor(elem) {
 
 function changeTransparent(elem) {
 	var bgcolor = window.getComputedStyle(elem, null).backgroundColor;
-	if (!bgcolor || bgcolor === 'transparent' || bgcolor.replace(' ', '') === 'rgba(0,0,0,0)') {
+	if (!bgcolor || bgcolor === 'transparent' || bgcolor.replace(/ /g, '') === 'rgba(0,0,0,0)') {
 		elem.style.backgroundColor = targetColor;
 	}
 }
-
-csser.prependSheet('body { background-color: ' + targetColor + '; }');
 
 var alltags = document.getElementsByTagName("*");
 
