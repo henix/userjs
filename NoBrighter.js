@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.4
+// @version			0.5
 // @include			*
 // @exclude			http://boards.4chan.org/*
 // @exclude			https://boards.4chan.org/*
@@ -12,6 +12,9 @@
 
 /**
  * ChangeLog:
+ *
+ * 2012-8-16	henix
+ * 		Change transparent body only when in top frame
  *
  * 2012-7-19	henix
  * 		Remove prependSheet because it may clash with <body bgcolor="XX">
@@ -69,7 +72,10 @@ function changeAll() {
 	}
 }
 changeAll();
-changeTransparent(document.body);
+if (window.top == window) {
+	// change transparent only when in top frame
+	changeTransparent(document.body);
+}
 
 var longRunSites = [/^http:\/\/(www.)?weibo.com\//];
 
