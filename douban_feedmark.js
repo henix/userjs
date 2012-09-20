@@ -28,9 +28,9 @@ var curMark;
 
 var markerDiv;
 
-#include "csser.js"
+#include "flower.js/csser.js"
 
-#include "findPos.js"
+#include "flower.js/findPos.js"
 
 function markItem(e) {
 	if (curMark) {

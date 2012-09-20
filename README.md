@@ -5,7 +5,12 @@ This is the source codes of [henix's userscripts](http://userscripts.org/users/4
 [Flower.js](https://github.com/henix/flower.js)
 
 ## Build
-    git clone https://github.com/henix/flower.js.git Flower.js
-    git clone https://github.com/henix/userjs.git
-    cd userjs
-    make
+
+	mkdir jslibs
+	cd jslibs
+	git clone https://github.com/henix/flower.js.git
+	cd ..
+
+	git clone https://github.com/henix/userjs.git
+	cd userjs
+	make

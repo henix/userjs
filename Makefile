@@ -5,10 +5,10 @@ all: $(FILES)
 .PHONY: all install clean
 
 %.user.js: %.js
-	cpp -I../Flower.js -P -C -o $@ $<
+	cpp -I../jslibs -P -C -o $@ $<
 
 install:
-	cp -uv $(FILES) release
+	ln -sv $(FILES) release
 
 clean:
 	rm -f $(FILES)
