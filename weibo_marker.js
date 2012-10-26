@@ -2,7 +2,7 @@
 // @name			Weibo Bookmark
 // @description		You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author			henix
-// @version			0.5
+// @version			1.0
 // @include			http://weibo.com/*
 // @include			http://www.weibo.com/*
 // @updateURL		http://userscripts.org/scripts/source/126882.user.js
@@ -11,6 +11,11 @@
 
 /**
  * ChangeLog:
+ *
+ * 2012-10-26	henix
+ * 		Updated to new version weibo.
+ *
+ * 		Version 1.0
  *
  * 2012-7-11	henix
  * 		Fix the bug that can't add marker just upon "XX分钟前，你看到这里".
@@ -76,8 +81,10 @@ function clickHandler(e) {
 
 var oldId;
 
+var feedlist = null;
+
 function markOld() {
-	var feeds = document.querySelectorAll('dl.feed_list'); // IE8+
+	var feeds = feedlist.querySelectorAll('div.WB_feed_type');
 	if (feeds) {
 		var len = feeds.length;
 		var done = false;
@@ -95,20 +102,20 @@ function markOld() {
 	}
 }
 
-csser.insertSheet('dl.feedmarker, dl.feedmarker-old {border: 1px dashed black} dl.feedmarker {border-top: 20px solid #ccc} dl.feedmarker-old {border-top: 20px solid #ff6}');
+csser.insertSheet('div.feedmarker, div.feedmarker-old {border: 1px dashed black} div.feedmarker {border-top: 20px solid #ccc} div.feedmarker-old {border-top: 20px solid #ff6}');
 oldId = localStorage.getItem('feedmarkid');
 
 function addClickHandler() {
-	var feedlist = document.querySelectorAll('div.feed_lists')[0];
+	feedlist = document.querySelector('div#pl_content_homeFeed > div.WB_feed');
 	if (feedlist) {
 		feedlist.addEventListener('click', clickHandler);
+		if (oldId) {
+			markOld();
+		}
 	} else {
 		// maybe the DOM is not loaded completely, we will try after 1s
 		setTimeout(addClickHandler, 1000);
 	}
 }
-addClickHandler();
 
-if (oldId) {
-	markOld();
-}
+addClickHandler();
