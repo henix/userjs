@@ -39,7 +39,8 @@
  * 		Version 0.1
  */
 
-#include "flower.js/csser.js"
+#inline Flower.csser
+var csser = Flower.csser;
 
 var curMark;
 
@@ -102,7 +103,27 @@ function markOld() {
 	}
 }
 
-csser.insertSheet('div.feedmarker, div.feedmarker-old {border: 1px dashed black} div.feedmarker {border-top: 20px solid #ccc} div.feedmarker-old {border-top: 20px solid #ff6}');
+csser.insertSheet(
+'div.WB_feed div.WB_feed_type.feedmarker, div.WB_feed div.WB_feed_type.feedmarker-old {' +
+'border-top-width: 20px;' +
+'border-right-width: 1px;' +
+'border-bottom-width: 1px;' +
+'border-left-width: 1px;' +
+'border-top-style: solid;' +
+'border-right-style: dashed;' +
+'border-bottom-style: dashed;' +
+'border-left-style: dashed;' +
+'border-right-color: black;' +
+'border-bottom-color: black;' +
+'border-left-color: black;' +
+'}' +
+'div.WB_feed div.WB_feed_type.feedmarker-old {' +
+'border-top-color: #ff6;' +
+'}' +
+'div.WB_feed div.WB_feed_type.feedmarker {' +
+'border-top-color: #ccc;' +
+'}'
+);
 oldId = localStorage.getItem('feedmarkid');
 
 function addClickHandler() {

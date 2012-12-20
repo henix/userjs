@@ -28,9 +28,9 @@ var curMark;
 
 var markerDiv;
 
-#include "flower.js/csser.js"
-
-#include "flower.js/findPos.js"
+#inline Flower.csser
+var csser = Flower.csser;
+#inline Flower.domer
 
 function markItem(e) {
 	if (curMark) {
@@ -38,7 +38,7 @@ function markItem(e) {
 	}
 	csser.addClass(e, 'feedmarker');
 	markerDiv.style.height = e.offsetHeight + 'px';
-	var pos = findPos(e);
+	var pos = Flower.domer.offset(e);
 	markerDiv.style.top = pos.top + 'px';
 	markerDiv.style.left = (pos.left - 46) + 'px';
 	curMark = e;
@@ -86,7 +86,7 @@ for (var i = stitems.length - 1; i >= 0; i--) {
 		csser.addClass(item, 'feedmarker-old');
 		var preMarkerDiv = document.createElement('div');
 		preMarkerDiv.style.cssText = 'background-color: #ff6; position: absolute; width: 46px';
-		var pos = findPos(item);
+		var pos = Flower.domer.offset(item);
 		preMarkerDiv.style.height = item.offsetHeight + 'px';
 		preMarkerDiv.style.top = pos.top + 'px';
 		preMarkerDiv.style.left = (pos.left - 46) + 'px';
