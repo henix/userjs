@@ -2,7 +2,7 @@
 // @name			Weibo Bookmark
 // @description		You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author			henix
-// @version			1.0
+// @version			1.0.1
 // @include			http://weibo.com/*
 // @include			http://www.weibo.com/*
 // @updateURL		http://userscripts.org/scripts/source/126882.user.js
@@ -11,6 +11,13 @@
 
 /**
  * ChangeLog:
+ *
+ * 2013-3-30	henix
+ * 		解决在分组可见微博上添加书签不可见的问题
+ *
+ * 		分组可见微博有 type_group 这个 class 从而使原始 css 的优先级更高
+ *
+ * 		Version 1.0.1
  *
  * 2012-10-26	henix
  * 		Updated to new version weibo.
@@ -104,7 +111,10 @@ function markOld() {
 }
 
 csser.insertSheet(
-'div.WB_feed div.WB_feed_type.feedmarker, div.WB_feed div.WB_feed_type.feedmarker-old {' +
+'div.WB_feed div.WB_feed_type.feedmarker, ' +
+'div.WB_feed div.WB_feed_type.feedmarker-old, ' +
+'div.WB_feed div.WB_feed_type.type_group.feedmarker, ' +
+'div.WB_feed div.WB_feed_type.type_group.feedmarker-old {' +
 'border-top-width: 20px;' +
 'border-right-width: 1px;' +
 'border-bottom-width: 1px;' +
@@ -117,10 +127,12 @@ csser.insertSheet(
 'border-bottom-color: black;' +
 'border-left-color: black;' +
 '}' +
-'div.WB_feed div.WB_feed_type.feedmarker-old {' +
+'div.WB_feed div.WB_feed_type.feedmarker-old, ' +
+'div.WB_feed div.WB_feed_type.type_group.feedmarker-old {' +
 'border-top-color: #ff6;' +
 '}' +
-'div.WB_feed div.WB_feed_type.feedmarker {' +
+'div.WB_feed div.WB_feed_type.feedmarker, ' +
+'div.WB_feed div.WB_feed_type.type_group.feedmarker {' +
 'border-top-color: #ccc;' +
 '}'
 );
