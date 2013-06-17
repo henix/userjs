@@ -2,8 +2,9 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.5
-// @include			*
+// @version			0.6
+// @include			http://*
+// @include			https://*
 // @exclude			http://boards.4chan.org/*
 // @exclude			https://boards.4chan.org/*
 // @updateURL		http://userscripts.org/scripts/source/138275.user.js
@@ -13,8 +14,13 @@
 /**
  * ChangeLog:
  *
+ * 2013-6-17	henix
+ * 		The latest version of TamperMonkey don't support "*", change to "http://*" and "https://*"
+ *
  * 2012-8-16	henix
- * 		Change transparent body only when in top frame
+ * 		Change transparent body only when in top frame.
+ *
+ * 		There could be a transparent iframe in a dark parent frame, in which case the old logic will do wrong.
  *
  * 2012-7-19	henix
  * 		Remove prependSheet because it may clash with <body bgcolor="XX">
