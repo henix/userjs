@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.7
+// @version			0.8
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
@@ -69,6 +69,9 @@ function changeBgcolor(elem) {
 		if (brightness > 0.94) {
 			elem.style.backgroundColor = targetColor;
 		}
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -81,16 +84,24 @@ function changeTransparent(elem) {
 
 var alltags = document.getElementsByTagName("*");
 
+var bodyChanged = false;
+
 function changeAll() {
 	var len = alltags.length;
 	for (var i = 0; i < len; i++) {
-		changeBgcolor(alltags[i]);
+		var changed = changeBgcolor(alltags[i]);
+		if (changed && (alltags[i] == document.body || alltags[i] == document.body.parentNode)) {
+			bodyChanged = true;
+		}
 	}
 }
 changeAll();
+
 if (window.top == window) {
 	// change transparent only when in top frame
-	changeTransparent(document.body.parentNode);
+	if (!bodyChanged) {
+		changeTransparent(document.body.parentNode);
+	}
 }
 
 var longRunSites = [/^http:\/\/(www.)?weibo.com\//];
