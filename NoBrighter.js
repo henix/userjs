@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.6
+// @version			0.7
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
@@ -13,6 +13,10 @@
 
 /**
  * ChangeLog:
+ *
+ * 2013-12-4	henix
+ * 		changeTransparent should be called on <html> tag, because it can set background-color. fix #1
+ * 		Provided other colors, you can uncomment them to use. The number after them is brightness.
  *
  * 2013-6-17	henix
  * 		The latest version of TamperMonkey don't support "*", change to "http://*" and "https://*"
@@ -40,7 +44,13 @@
  * 		Version 0.1
  */
 
-var targetColor = '#C7EDCC';
+/* Green */
+// var targetColor = '#C7EDCC'; // 93
+var targetColor = '#C1E6C6'; // 90
+
+/* Wheat */
+// var targetColor = '#E6D6B8'; // 90
+// var targetColor = '#E3E1D1'; // 89
 
 function changeBgcolor(elem) {
 	if (elem.nodeType !== Node.ELEMENT_NODE) {
@@ -80,7 +90,7 @@ function changeAll() {
 changeAll();
 if (window.top == window) {
 	// change transparent only when in top frame
-	changeTransparent(document.body);
+	changeTransparent(document.body.parentNode);
 }
 
 var longRunSites = [/^http:\/\/(www.)?weibo.com\//];
