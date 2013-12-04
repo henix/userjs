@@ -44,6 +44,10 @@
  * 		Version 0.1
  */
 
+// ========== Config ========== //
+
+// Uncomment to use, number after is its brightness
+
 /* Green */
 // var targetColor = '#C7EDCC'; // 93
 var targetColor = '#C1E6C6'; // 90
@@ -51,6 +55,19 @@ var targetColor = '#C1E6C6'; // 90
 /* Wheat */
 // var targetColor = '#E6D6B8'; // 90
 // var targetColor = '#E3E1D1'; // 89
+
+var Brightness_Threshold = 0.94; // a number between 0 and 1
+
+// For websites updating their contents via ajax, NoBrighter can run in background and convert background color periodically.
+var longRunSites = [
+	'mail.google.com',
+	'docs.google.com',
+	'twitter.com',
+	'weibo.com',
+	'www.weibo.com',
+];
+
+// ========== End of config ========== //
 
 function changeBgcolor(elem) {
 	if (elem.nodeType !== Node.ELEMENT_NODE) {
@@ -66,7 +83,7 @@ function changeBgcolor(elem) {
 		// we adopt HSL's lightness definition, see http://en.wikipedia.org/wiki/HSL_and_HSV
 		var brightness = (Math.max(r, g, b) + Math.min(r, g, b)) / 255 / 2;
 
-		if (brightness > 0.94) {
+		if (brightness > Brightness_Threshold) {
 			elem.style.backgroundColor = targetColor;
 		}
 		return true;
@@ -104,12 +121,10 @@ if (window.top == window) {
 	}
 }
 
-var longRunSites = [/^http:\/\/(www.)?weibo.com\//];
-
 for (var i = 0; i < longRunSites.length; i++) {
-	if (location.href.search(longRunSites[i]) !== -1) {
+	if (location.hostname === longRunSites[i]) {
 		console.log('make NoBrighter runs forever...');
-		setInterval(changeAll, 2000);
+		setInterval(changeAll, 2000); // convert every 2s
 		break;
 	}
 }
