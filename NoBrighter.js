@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			20131225
+// @version			20131225-2
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
@@ -64,7 +64,13 @@ var Brightness_Threshold = 0.94; // a number between 0 and 1
 var longRunSites = [
 	'mail.google.com',
 	'docs.google.com',
+
 	'twitter.com',
+	'github.com',
+
+	'www.coursera.org',
+	'class.coursera.org',
+
 	'weibo.com',
 	'www.weibo.com',
 ];
@@ -133,7 +139,7 @@ if (window.top == window) {
 
 for (var i = 0; i < longRunSites.length; i++) {
 	if (location.hostname === longRunSites[i]) {
-		console.log('make NoBrighter runs forever...');
+		console.info('make NoBrighter runs forever...');
 		setInterval(changeAll, 2000); // convert every 2s
 		break;
 	}
