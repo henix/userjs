@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			0.8
+// @version			20131225
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
@@ -13,6 +13,8 @@
 
 /**
  * ChangeLog:
+ *
+ * see https://github.com/henix/userjs/commits/master/NoBrighter.js
  *
  * 2013-12-4	henix
  * 		changeTransparent should be called on <html> tag, because it can set background-color. fix #1
@@ -69,12 +71,19 @@ var longRunSites = [
 
 // ========== End of config ========== //
 
+/**
+ * String -> Bool
+ */
+function isTransparent(color) {
+    return color === 'transparent' || color.replace(/ /g, '') === 'rgba(0,0,0,0)';
+}
+
 function changeBgcolor(elem) {
 	if (elem.nodeType !== Node.ELEMENT_NODE) {
 		return;
 	}
 	var bgcolor = window.getComputedStyle(elem, null).backgroundColor;
-	if (bgcolor && bgcolor !== 'transparent') {
+	if (bgcolor && !isTransparent(bgcolor)) {
 		var arRGB = bgcolor.match(/\d+/g);
 		var r = parseInt(arRGB[0], 10);
 		var g = parseInt(arRGB[1], 10);
@@ -94,7 +103,7 @@ function changeBgcolor(elem) {
 
 function changeTransparent(elem) {
 	var bgcolor = window.getComputedStyle(elem, null).backgroundColor;
-	if (!bgcolor || bgcolor === 'transparent' || bgcolor.replace(/ /g, '') === 'rgba(0,0,0,0)') {
+	if (!bgcolor || isTransparent(bgcolor)) {
 		elem.style.backgroundColor = targetColor;
 	}
 }
@@ -107,7 +116,8 @@ function changeAll() {
 	var len = alltags.length;
 	for (var i = 0; i < len; i++) {
 		var changed = changeBgcolor(alltags[i]);
-		if (changed && (alltags[i] == document.body || alltags[i] == document.body.parentNode)) {
+		var tagName = alltags[i].tagName.toUpperCase();
+		if (changed && (tagName === "BODY" || tagName === "HTML")) {
 			bodyChanged = true;
 		}
 	}
