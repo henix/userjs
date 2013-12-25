@@ -9,6 +9,7 @@
 // @exclude			https://boards.4chan.org/*
 // @updateURL		http://userscripts.org/scripts/source/138275.user.js
 // @license			MIT License
+// @grant			none
 // ==/UserScript==
 
 /**
