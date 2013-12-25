@@ -74,6 +74,7 @@ var longRunSites = [
 
 	'weibo.com',
 	'www.weibo.com',
+	'www.renren.com',
 ];
 
 // ========== End of config ========== //
