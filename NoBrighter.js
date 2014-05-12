@@ -2,7 +2,7 @@
 // @name			NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			20131225-2
+// @version			20140512-1
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
