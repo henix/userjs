@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name			NoBrighter
+// @namespace		https://github.com/henix/userjs/NoBrighter.js
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			20140512-1
+// @version			20140619-1
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
 // @exclude			https://boards.4chan.org/*
-// @updateURL		http://userscripts.org/scripts/source/138275.user.js
+// @updateURL		https://greasyfork.org/scripts/979-nobrighter/code/NoBrighter.user.js
 // @license			MIT License
 // @grant			none
 // ==/UserScript==
