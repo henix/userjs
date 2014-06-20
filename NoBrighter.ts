@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name			NoBrighter
-// @namespace		https://github.com/henix/userjs/NoBrighter.js
+// @namespace		https://github.com/henix/userjs/NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			20140619-1
+// @version			20140620.1
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
 // @exclude			https://boards.4chan.org/*
-// @updateURL		https://greasyfork.org/scripts/979-nobrighter/code/NoBrighter.user.js
 // @license			MIT License
 // @grant			none
 // ==/UserScript==
@@ -16,7 +15,7 @@
 /**
  * ChangeLog:
  *
- * see https://github.com/henix/userjs/commits/master/NoBrighter.js
+ * see https://github.com/henix/userjs/commits/master/NoBrighter.ts
  *
  * 2013-12-4	henix
  * 		changeTransparent should be called on <html> tag, because it can set background-color. fix #1
@@ -83,14 +82,11 @@ var longRunSites = [
 
 // ========== End of config ========== //
 
-/**
- * String -> Bool
- */
-function isTransparent(color) {
+function isTransparent(color: string): boolean {
     return color === 'transparent' || color.replace(/ /g, '') === 'rgba(0,0,0,0)';
 }
 
-function changeBgcolor(elem) {
+function changeBgcolor(elem: HTMLElement): boolean {
 	if (elem.nodeType !== Node.ELEMENT_NODE) {
 		return;
 	}
@@ -113,14 +109,14 @@ function changeBgcolor(elem) {
 	}
 }
 
-function changeTransparent(elem) {
+function changeTransparent(elem: HTMLElement): void {
 	var bgcolor = window.getComputedStyle(elem, null).backgroundColor;
 	if (!bgcolor || isTransparent(bgcolor)) {
 		elem.style.backgroundColor = targetColor;
 	}
 }
 
-var alltags = document.getElementsByTagName("*");
+var alltags = <NodeListOf<HTMLElement>>document.getElementsByTagName("*");
 
 var bodyChanged = false;
 
@@ -139,7 +135,7 @@ changeAll();
 if (window.top == window) {
 	// change transparent only when in top frame
 	if (!bodyChanged) {
-		changeTransparent(document.body.parentNode);
+		changeTransparent(<HTMLElement>document.body.parentNode);
 	}
 }
 
