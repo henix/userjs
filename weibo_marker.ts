@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name			Weibo Bookmark
+// @namespace		https://github.com/henix/userjs/weibo_marker
 // @description		You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author			henix
-// @version			1.0.1
+// @version			20140620.1
 // @include			http://weibo.com/*
 // @include			http://www.weibo.com/*
-// @updateURL		http://userscripts.org/scripts/source/126882.user.js
 // @license			MIT License
+// @grant			none
 // ==/UserScript==
 
 /**
@@ -46,12 +47,15 @@
  * 		Version 0.1
  */
 
-#inline Flower.csser
-var csser = Flower.csser;
+/// <reference path="flower/csser/addClass.ts" />
+/// <reference path="flower/csser/removeClass.ts" />
+/// <reference path="flower/csser/addSheet.ts" />
 
-var curMark;
+import csser = Flower.csser;
 
-function markItem(e) {
+var curMark: HTMLElement;
+
+function markItem(e: HTMLElement) {
 	if (curMark) {
 		demarkItem(curMark);
 	}
@@ -59,24 +63,32 @@ function markItem(e) {
 	curMark = e;
 }
 
-function demarkItem(e) {
+function demarkItem(e: HTMLElement) {
 	csser.removeClass(e, 'feedmarker');
 	curMark = null;
 }
 
-function clickHandler(e) {
-	if (!e) e = window.event;
+function getTarget(ev: Event, mse: MSEventObj): Node {
+	if (ev) {
+		return <Node>ev.target;
+	} else {
+		return mse.srcElement;
+	}
+}
+
+function clickHandler(ev: MouseEvent) {
+	var e = <{ctrlKey:boolean}>(ev || window.event);
 	if (!e.ctrlKey) {
 		return;
 	}
-	var tg = window.event ? e.srcElement : e.target;
+	var tg = <HTMLElement>getTarget(ev, window.event);
 	if (tg.nodeName === 'A') {
 		return;
 	}
-	var p = tg.parentNode;
+	var p = <HTMLElement>tg.parentNode;
 	while (p != this) {
 		tg = p;
-		p = tg.parentNode;
+		p = <HTMLElement>tg.parentNode;
 	}
 	if (curMark !== tg) {
 		markItem(tg);
@@ -87,12 +99,12 @@ function clickHandler(e) {
 	}
 }
 
-var oldId;
+var oldId: string;
 
-var feedlist = null;
+var feedlist: Element = null;
 
 function markOld() {
-	var feeds = feedlist.querySelectorAll('div.WB_feed_type');
+	var feeds = <NodeListOf<HTMLElement>>feedlist.querySelectorAll('div.WB_feed_type');
 	if (feeds) {
 		var len = feeds.length;
 		var done = false;
@@ -110,7 +122,7 @@ function markOld() {
 	}
 }
 
-csser.insertSheet(
+csser.addSheet(
 'div.WB_feed div.WB_feed_type.feedmarker, ' +
 'div.WB_feed div.WB_feed_type.feedmarker-old, ' +
 'div.WB_feed div.WB_feed_type.type_group.feedmarker, ' +
