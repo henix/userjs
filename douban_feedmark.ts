@@ -3,7 +3,7 @@
 // @namespace		https://github.com/henix/userjs/douban_feedmark.ts
 // @description		You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author			henix
-// @version			20140620-1
+// @version			20140620.2
 // @include			http://www.douban.com/*
 // @license			MIT License
 // ==/UserScript==
@@ -77,8 +77,8 @@ var stitems = document.querySelectorAll('div.status-item'); // IE8+
 csser.addSheet(
 ''
 + '.feedmarker, .feedmarker-old { border: 1px dashed black }\n'
-+ '.feedmarker-old { border-left: 46px solid #ff6 }\n'
-+ '.feedmarker { border-left: 46px solid #ccc }\n'
++ '.feedmarker-old { border-top: 20px solid #ff6 }\n'
++ '.feedmarker { border-top: 20px solid #ccc }\n'
 );
 
 for (var i = stitems.length - 1; i >= 0; i--) {
