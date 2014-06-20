@@ -1,18 +1,12 @@
-FILES := douban_feedmark.user.js weibo_marker.user.js NoBrighter.user.js
+TS := $(wildcard *.ts)
+USERJS := $(patsubst %.ts,build/%.user.js,$(TS))
 
-all: $(FILES)
+.PHONY: all clean
 
-JSLIB_PATH=~/jslibs
-RAINY_PATH=~/rainy
+all: $(USERJS)
 
-.PHONY: all install clean
-
-%.user.js: %.js
-	$(RAINY_PATH)/rain --incpath $(JSLIB_PATH) --moddef $(JSLIB_PATH)/flower.js/flower.moddef $< > $@
-#	cpp -I../jslibs -P -undef -Wundef -std=c99 -nostdinc -Wtrigraphs -fdollars-in-identifiers -C -o $@ $<
-
-install:
-	ln -sv $(FILES) release
+build/%.user.js: %.ts
+	tsc --out $@ $<
 
 clean:
-	rm -f $(FILES)
+	rm $(USERJS)
