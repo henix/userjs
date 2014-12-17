@@ -3,7 +3,7 @@
 // @namespace		https://github.com/henix/userjs/NoBrighter
 // @description		Change element's background color that is too bright to a light green.
 // @author			henix
-// @version			20140620.1
+// @version			20141217.1
 // @include			http://*
 // @include			https://*
 // @exclude			http://boards.4chan.org/*
@@ -65,6 +65,7 @@ var Brightness_Threshold = 0.94; // a number between 0 and 1
 var longRunSites = [
 	'mail.google.com',
 	'docs.google.com',
+	'plus.google.com',
 
 	'twitter.com',
 	'github.com',
