@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/douban_feedmark
 // @description You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author      henix
-// @version     20151009.1
+// @version     20151010.1
 // @include     http://www.douban.com/*
 // @license     MIT License
 // @@require    https://cdnjs.cloudflare.com/ajax/libs/dom4/1.5.1/dom4.js
@@ -26,18 +26,51 @@
  * 		Version 0.1
  */
 
+// Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
+// For all details and docs: https://github.com/paulmillr/array.prototype.find
+(function(globals){
+  if (Array.prototype.find) return;
+
+  var find = function(predicate) {
+    var list = Object(this);
+    var length = list.length < 0 ? 0 : list.length >>> 0; // ES.ToUint32;
+    if (length === 0) return undefined;
+    if (typeof predicate !== 'function' || Object.prototype.toString.call(predicate) !== '[object Function]') {
+      throw new TypeError('Array#find: predicate must be a function');
+    }
+    var thisArg = arguments[1];
+    for (var i = 0, value; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) return value;
+    }
+    return undefined;
+  };
+
+  if (Object.defineProperty) {
+    try {
+      Object.defineProperty(Array.prototype, 'find', {
+        value: find, configurable: true, enumerable: false, writable: true
+      });
+    } catch(e) {}
+  }
+
+  if (!Array.prototype.find) {
+    Array.prototype.find = find;
+  }
+})(this);
+
 var curMark;
 
 function markItem(e) {
   if (curMark) {
-    demarkItem(curMark);
+    demarkItem();
   }
   e.classList.add('feedmarker');
   curMark = e;
 }
 
-function demarkItem(e) {
-  e.classList.remove('feedmarker');
+function demarkItem() {
+  curMark.classList.remove('feedmarker');
   curMark = null;
 }
 
@@ -54,20 +87,27 @@ function clickHandler(e) {
     markItem(this);
     localStorage.setItem('feedmarkid', this.getAttribute('data-sid'));
   } else {
-    demarkItem(this);
+    demarkItem();
     localStorage.removeItem('feedmarkid');
   }
 }
 
-var markId = localStorage.getItem('feedmarkid');
-var stitems = document.querySelectorAll('div.status-item'); // IE8+
+GM_addStyle(
+".feedmarker, .feedmarker-old { border: 1px dashed black }" +
+".feedmarker-old { border-top: 20px solid #ff6 }" +
+".feedmarker { border-top: 20px solid #ccc }"
+);
 
-GM_addStyle('.feedmarker, .feedmarker-old { border: 1px dashed black } .feedmarker-old { border-top: 20px solid #ff6 } .feedmarker { border-top: 20px solid #ccc }');
+var stitems = Array.prototype.slice.call(document.querySelectorAll("div.status-item"));
 
-for (var i = stitems.length - 1; i >= 0; i--) {
-  var stitem = stitems[i];
-  if (markId && stitem.getAttribute('data-sid') === markId) {
-    stitem.classList.add('feedmarker-old');
+var oldId = localStorage.getItem('feedmarkid');
+if (oldId) {
+  var item = stitems.find(function(e) { return e.getAttribute("data-sid") == oldId; });
+  if (item) {
+    item.classList.add("feedmarker-old");
   }
-  stitem.addEventListener('click', clickHandler, true); // register for capturing
 }
+
+stitems.forEach(function(item) {
+  item.addEventListener("click", clickHandler, true); // register for capturing
+});
