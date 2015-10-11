@@ -3,10 +3,9 @@
 // @namespace   https://github.com/henix/userjs/xueqiu_helper
 // @description 在雪球组合上显示最近一个交易日调仓的成交价。允许为每个组合设置预算，并根据预算计算应买卖的股数。
 // @author      henix
-// @version     20151011.1
+// @version     20151011.2
 // @include     http://xueqiu.com/P/*
 // @license     MIT License
-// @require     https://cdnjs.cloudflare.com/ajax/libs/dom4/1.5.1/dom4.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_xmlhttpRequest
