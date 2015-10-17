@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/xueqiu_helper
 // @description 在雪球组合上显示最近一个交易日调仓的成交价。允许为每个组合设置预算，并根据预算计算应买卖的股数。
 // @author      henix
-// @version     20151011.2
+// @version     20151017.1
 // @include     http://xueqiu.com/P/*
 // @license     MIT License
 // @grant       GM_getValue
@@ -251,7 +251,7 @@ function renderActions(actions, budget) {
     function pad(x) { return x > 10 ? x : "0" + x; }
     return [TR(TD({colspan:4}, utime.getFullYear() + "-" + (utime.getMonth()+1) + "-" + utime.getDate() + " " + utime.getHours() + ":" + pad(utime.getMinutes()) + ":" + pad(utime.getSeconds())))].concat(a.rebalancing_histories.map(function(r) {
       var prev_weight = r.prev_weight_adjusted || 0;
-      return TR(TD(r.stock_name + "(" + r.stock_symbol + ")"), TD(prev_weight + "% → " + r.target_weight + "%"), TD(r.price), TD(myround(budget * (r.target_weight - prev_weight) / 100 / r.price)));
+      return TR(TD(A({target:"_blank",href:"/S/" + r.stock_symbol}, r.stock_name), "(" + r.stock_symbol.replace(/^SH|^SZ/, "$&.") + ")"), TD(prev_weight + "% → " + r.target_weight + "%"), TD(r.price), TD(myround(budget * (r.target_weight - prev_weight) / 100 / r.price)));
     }));
   }).reduce(function(a, b) { return a.concat(b); }, []);
 
