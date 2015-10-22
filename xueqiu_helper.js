@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/xueqiu_helper
 // @description 在雪球组合上显示最近一个交易日调仓的成交价。允许为每个组合设置预算，并根据预算计算应买卖的股数。
 // @author      henix
-// @version     20151017.2
+// @version     20151022.1
 // @include     http://xueqiu.com/P/*
 // @license     MIT License
 // @grant       GM_getValue
@@ -245,28 +245,68 @@ function myround(x) {
   return Math.sign(x) * Math.round(Math.abs(x));
 }
 
-function renderActions(actions, budget) {
-  var trs = actions.map(function(a) {
+function FollowDetails(elem) {
+  this.elem = elem;
+  this.symbol = elem.getAttribute("symbol");
+}
+
+FollowDetails.prototype.repaint = function(data) {
+  var $this = this;
+  var rebalances = data.rebalances;
+  var budget = data.budget;
+  var cur_prices = data.cur_prices;
+
+  var now = new Date(rebalances.list[0].updated_at);
+  var lastday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  var trs = rebalances.list.filter(function(o) { return o.updated_at > lastday && (o.status == "success" || o.status == "pending"); }).map(function(a) {
     var utime = new Date(a.updated_at);
     function pad(x) { return x > 10 ? x : "0" + x; }
-    return [TR(TD({colspan:4}, utime.getFullYear() + "-" + (utime.getMonth()+1) + "-" + utime.getDate() + " " + utime.getHours() + ":" + pad(utime.getMinutes()) + ":" + pad(utime.getSeconds())))].concat(a.rebalancing_histories.map(function(r) {
+    return [TR(TD({colspan:4}, utime.getFullYear() + "-" + (utime.getMonth()+1) + "-" + utime.getDate() + " " + utime.getHours() + ":" + pad(utime.getMinutes()) + ":" + pad(utime.getSeconds()) + (a.status == "pending" ? "（待成交）" : "")))].concat(a.rebalancing_histories.map(function(r) {
       var prev_weight = r.prev_weight_adjusted || 0;
-      return TR(TD(A({target:"_blank",href:"/S/" + r.stock_symbol}, r.stock_name), "(" + r.stock_symbol.replace(/^SH|^SZ/, "$&.") + ")"), TD(prev_weight + "% → " + r.target_weight + "%"), TD(r.price), TD(myround(budget * (r.target_weight - prev_weight) / 100 / r.price)));
+      var delta = r.target_weight - prev_weight;
+      var price = r.price || cur_prices[r.stock_symbol];
+      if (delta && !price) {
+        // 开盘前无价格，使用当前价格
+        GM_xmlhttpRequest({
+          method: "GET",
+          url: "http://xueqiu.com/stock/quotep.json?stockid=" + r.stock_id,
+          onload: function(resp) {
+            var info = JSON.parse(resp.responseText);
+            cur_prices[r.stock_symbol] = info[r.stock_id].current; // TODO: immutable map
+            $this.repaint(data);
+          }
+        });
+      }
+      return TR(
+        TD(A({ target: "_blank", href: "/S/" + r.stock_symbol }, r.stock_name), "(" + r.stock_symbol.replace(/^SH|^SZ/, "$&.") + ")"),
+        TD(prev_weight + "% → " + r.target_weight + "%"),
+        TD(delta ? (price ? (price + (r.price ? "" : "（当前价）")) : "正在获取") : "无"),
+        TD(delta ? (price ? myround(budget * delta / 100 / price) : "正在获取") : "无")
+      );
     }));
   }).reduce(function(a, b) { return a.concat(b); }, []);
 
-  var input = INPUT({value:budget});
-  var saveBut = INPUT({type:"button",value:"保存"});
+  var input = INPUT({ value: budget });
+  var saveBut = INPUT({ type: "button", value: "保存" });
   saveBut.addEventListener("click", function() {
     GM_setValue("budget." + symbol, input.value);
-    alert("保存成功，请刷新页面");
+    data.budget = parseInt(input.value, 10); // TODO: immutable map
+    $this.repaint(data);
   });
-  var settings = DIV({"class":"budget-setting"}, "预算 ", input, " 元 ", saveBut);
+  var settings = DIV({ "class": "budget-setting" }, "预算 ", input, " 元 ", saveBut);
 
-  return DIV({"class":"follow-details"},
+  var output = [
     TABLE.apply(null, [TR(TH("名称"), TH("百分比"), TH("参考成交价"), TH("买卖股数"))].concat(trs)),
     settings
-  );
+  ];
+
+  var elem = this.elem;
+  // Remove all children https://stackoverflow.com/a/3955238/1305074
+  while (elem.firstChild) {
+    elem.removeChild(elem.firstChild);
+  }
+  output.forEach(function(e) { elem.appendChild(e); });
 }
 
 GM_xmlhttpRequest({
@@ -274,17 +314,23 @@ GM_xmlhttpRequest({
   url: "http://xueqiu.com/cubes/rebalancing/history.json?cube_symbol=" + symbol + "&count=20&page=1",
   onload: function(resp) {
     var histories = JSON.parse(resp.responseText);
-    var now = new Date(histories.list[0].updated_at);
-    var lastday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    var actions = histories.list.filter(function(o) { return o.status == "success" && o.updated_at > lastday; });
+
     var weightCircle = document.getElementById("weight-circle");
-    weightCircle.parentNode.insertBefore(renderActions(actions, parseInt(GM_getValue("budget." + symbol, 10000), 10)), weightCircle);
+    var div = DIV({ "class": "-FollowDetails", "symbol": symbol });
+    weightCircle.parentNode.insertBefore(div, weightCircle);
+
+    var followDetails = new FollowDetails(div);
+    followDetails.repaint({
+      rebalances: histories,
+      budget: parseInt(GM_getValue("budget." + symbol, 10000), 10),
+      cur_prices: {}
+    });
   }
 });
 
 GM_addStyle(
-".follow-details table { width: 100%; margin: 10px auto; }" +
-".follow-details th { font-weight: bold; }" +
-".follow-details th, .follow-details td { border: 1px solid black; padding: 0.5em; }" +
-".follow-details .budget-setting { margin: 10px 0 20px 0; }"
+".-FollowDetails table { width: 100%; margin: 10px auto; }" +
+".-FollowDetails th { font-weight: bold; }" +
+".-FollowDetails th, .-FollowDetails td { border: 1px solid black; padding: 0.5em; }" +
+".-FollowDetails .budget-setting { margin: 10px 0 20px 0; }"
 );
