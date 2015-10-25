@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/xueqiu_helper
 // @description 在雪球组合上显示最近一个交易日调仓的成交价。允许为每个组合设置预算，并根据预算计算应买卖的股数。
 // @author      henix
-// @version     20151022.1
+// @version     20151025.1
 // @include     http://xueqiu.com/P/*
 // @license     MIT License
 // @grant       GM_getValue
@@ -254,6 +254,7 @@ FollowDetails.prototype.repaint = function(data) {
   var $this = this;
   var rebalances = data.rebalances;
   var budget = data.budget;
+  var buyfactor = data.buyfactor;
   var cur_prices = data.cur_prices;
 
   var now = new Date(rebalances.list[0].updated_at);
@@ -278,26 +279,35 @@ FollowDetails.prototype.repaint = function(data) {
           }
         });
       }
+      var quantity = budget * delta / 100 / price;
       return TR(
         TD(A({ target: "_blank", href: "/S/" + r.stock_symbol }, r.stock_name), "(" + r.stock_symbol.replace(/^SH|^SZ/, "$&.") + ")"),
         TD(prev_weight + "% → " + r.target_weight + "%"),
-        TD(delta ? (price ? (price + (r.price ? "" : "（当前价）")) : "正在获取") : "无"),
-        TD(delta ? (price ? myround(budget * delta / 100 / price) : "正在获取") : "无")
+        TD(delta ? (price ? (price + (r.price ? ((buyfactor != 1 && delta > 0) ? (" / " + Math.round(price * buyfactor * 1000) / 1000) : "") : "（当前价）")) : "正在获取") : "无"),
+        TD(delta ? (price ? (myround(quantity) + ((buyfactor != 1 && delta > 0) ? (" / " + Math.round(quantity / buyfactor)) : "")) : "正在获取") : "无")
       );
     }));
   }).reduce(function(a, b) { return a.concat(b); }, []);
 
-  var input = INPUT({ value: budget });
-  var saveBut = INPUT({ type: "button", value: "保存" });
-  saveBut.addEventListener("click", function() {
-    GM_setValue("budget." + symbol, input.value);
-    data.budget = parseInt(input.value, 10); // TODO: immutable map
+  var budgetInput = INPUT({ value: budget, size: 10 });
+  var budgetSave = INPUT({ type: "button", value: "保存" });
+  budgetSave.addEventListener("click", function() {
+    budget = parseInt(budgetInput.value, 10);
+    GM_setValue("budget." + $this.symbol, budget);
+    data.budget = budget; // TODO: immutable map
     $this.repaint(data);
   });
-  var settings = DIV({ "class": "budget-setting" }, "预算 ", input, " 元 ", saveBut);
+  var buyfactorInput = INPUT({ value: buyfactor, size: 5 });
+  var buyfactorSave = INPUT({ type: "button", value: "保存" });
+  buyfactorSave.addEventListener("click", function() {
+    GM_setValue("buyfactor." + $this.symbol, buyfactorInput.value);
+    data.buyfactor = parseFloat(buyfactorInput.value); // TODO: immutable map
+    $this.repaint(data);
+  });
+  var settings = DIV({ "class": "budget-setting" }, "预算 ", budgetInput, " 元 ", budgetSave, " 挂买价 = 参考成交价 * ", buyfactorInput, " ", buyfactorSave);
 
   var output = [
-    TABLE.apply(null, [TR(TH("名称"), TH("百分比"), TH("参考成交价"), TH("买卖股数"))].concat(trs)),
+    TABLE.apply(null, [TR(TH("名称"), TH("百分比"), TH("参考成交价" + (buyfactor != 1 ? " / 挂买价" : "")), TH("买卖股数" + (buyfactor != 1 ? " / 挂买股数" : "")))].concat(trs)),
     settings
   ];
 
@@ -323,6 +333,7 @@ GM_xmlhttpRequest({
     followDetails.repaint({
       rebalances: histories,
       budget: parseInt(GM_getValue("budget." + symbol, 10000), 10),
+      buyfactor: parseFloat(GM_getValue("buyfactor." + symbol, 1)),
       cur_prices: {}
     });
   }
