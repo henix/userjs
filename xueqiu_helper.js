@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/xueqiu_helper
 // @description 在雪球组合上显示最近一个交易日调仓的成交价。允许为每个组合设置预算，并根据预算计算应买卖的股数。
 // @author      henix
-// @version     20151025.1
+// @version     20151026.1
 // @include     http://xueqiu.com/P/*
 // @license     MIT License
 // @grant       GM_getValue
@@ -262,7 +262,7 @@ FollowDetails.prototype.repaint = function(data) {
 
   var trs = rebalances.list.filter(function(o) { return o.updated_at > lastday && (o.status == "success" || o.status == "pending"); }).map(function(a) {
     var utime = new Date(a.updated_at);
-    function pad(x) { return x > 10 ? x : "0" + x; }
+    function pad(x) { return x >= 10 ? x : "0" + x; }
     return [TR(TD({colspan:4}, utime.getFullYear() + "-" + (utime.getMonth()+1) + "-" + utime.getDate() + " " + utime.getHours() + ":" + pad(utime.getMinutes()) + ":" + pad(utime.getSeconds()) + (a.status == "pending" ? "（待成交）" : "")))].concat(a.rebalancing_histories.map(function(r) {
       var prev_weight = r.prev_weight_adjusted || 0;
       var delta = r.target_weight - prev_weight;
