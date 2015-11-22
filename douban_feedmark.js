@@ -3,9 +3,9 @@
 // @namespace   https://github.com/henix/userjs/douban_feedmark
 // @description You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author      henix
-// @version     20151017.1
-// @include     http://www.douban.com/
-// @include     https://www.douban.com/
+// @version     20151122.1
+// @include     http://www.douban.com/*
+// @include     https://www.douban.com/*
 // @license     MIT License
 // @require     https://cdnjs.cloudflare.com/ajax/libs/dom4/1.5.1/dom4.js
 // @grant       GM_getValue
