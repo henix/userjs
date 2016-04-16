@@ -3,8 +3,9 @@
 // @namespace   https://github.com/henix/userjs/xueqiu_helper
 // @description 在雪球组合上显示最近一个交易日调仓的成交价。允许为每个组合设置预算，并根据预算计算应买卖的股数。
 // @author      henix
-// @version     20151110.1
+// @version     20160416.2
 // @include     http://xueqiu.com/P/*
+// @include     https://xueqiu.com/P/*
 // @license     MIT License
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -271,7 +272,7 @@ FollowDetails.prototype.repaint = function(data) {
         // 开盘前无价格，使用当前价格
         GM_xmlhttpRequest({
           method: "GET",
-          url: "http://xueqiu.com/stock/quotep.json?stockid=" + r.stock_id,
+          url: "/stock/quotep.json?stockid=" + r.stock_id,
           onload: function(resp) {
             var info = JSON.parse(resp.responseText);
             cur_prices[r.stock_symbol] = info[r.stock_id].current; // TODO: immutable map
@@ -317,11 +318,11 @@ FollowDetails.prototype.repaint = function(data) {
     elem.removeChild(elem.firstChild);
   }
   output.forEach(function(e) { elem.appendChild(e); });
-}
+};
 
 GM_xmlhttpRequest({
   method: "GET",
-  url: "http://xueqiu.com/cubes/rebalancing/history.json?cube_symbol=" + symbol + "&count=20&page=1",
+  url: "/cubes/rebalancing/history.json?cube_symbol=" + symbol + "&count=20&page=1",
   onload: function(resp) {
     var histories = JSON.parse(resp.responseText);
 
