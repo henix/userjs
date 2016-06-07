@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/NoBrighter
 // @description Change element's background color that is too bright to a light green.
 // @author      henix
-// @version     20151009.1
+// @version     20160608.1
 // @include     http://*
 // @include     https://*
 // @exclude     http://boards.4chan.org/*
@@ -82,6 +82,8 @@ var longRunSites = [
   'reader.aol.com',
 ];
 
+var $minHeight = 6;
+
 // ========== End of config ========== //
 
 function isTransparent(color) {
@@ -93,7 +95,7 @@ function changeBgcolor(elem) {
     return;
   }
   var bgcolor = window.getComputedStyle(elem, null).backgroundColor;
-  if (bgcolor && !isTransparent(bgcolor)) {
+  if (bgcolor && !isTransparent(bgcolor) && elem.clientHeight >= $minHeight) {
     var arRGB = bgcolor.match(/\d+/g);
     var r = parseInt(arRGB[0], 10);
     var g = parseInt(arRGB[1], 10);
