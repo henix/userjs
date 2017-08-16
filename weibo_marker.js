@@ -3,9 +3,11 @@
 // @namespace   https://github.com/henix/userjs/weibo_marker
 // @description You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author      henix
-// @version     20151010.3
+// @version     20170817.1
 // @include     http://weibo.com/*
+// @include     https://weibo.com/*
 // @include     http://www.weibo.com/*
+// @include     https://www.weibo.com/*
 // @license     MIT License
 // @require     https://cdnjs.cloudflare.com/ajax/libs/dom4/1.5.1/dom4.js
 // @grant       GM_addStyle
