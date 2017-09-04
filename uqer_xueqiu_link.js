@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name        Uqer Xueqiu Link
+// @name        Uqer / JoinQuant Xueqiu Link
 // @namespace   https://github.com/henix/userjs/uqer_xueqiu_link
 // @author      henix
-// @version     20170817.1
-// @description 为优矿的结果中的 secID 添加到雪球的链接
+// @version     20170904.1
+// @description 为优矿 / 聚宽的结果中的 secID / code 添加到雪球的链接
 // @match       https://uqer.io/labs/*
+// @match       https://www.joinquant.com/user/*/notebooks/*.ipynb
 // @license     MIT License
 // @require     https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js
 // @grant       none
@@ -18,7 +19,7 @@ var markets = {
 };
 
 function replaceLink() {
-	[].slice.call(document.querySelectorAll(".result td")).forEach(function(td) {
+	[].slice.call(document.querySelectorAll(".result td, table.dataframe td")).forEach(function(td) {
 		if (td.childNodes && td.childNodes[0] && td.childNodes[0].nodeType == Node.TEXT_NODE) {
 			var m = secIDPatt.exec(td.textContent);
 			if (m) {
