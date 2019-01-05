@@ -2,12 +2,13 @@
 // @name        Uqer / JoinQuant Xueqiu Link
 // @namespace   https://github.com/henix/userjs/uqer_xueqiu_link
 // @author      henix
-// @version     20171223.1
+// @version     20190105.1
 // @description 为优矿 / 聚宽的结果中的 secID / code 添加到雪球的链接
 // @match       https://uqer.io/labs/*
+// @match       https://www.joinquant.com/user/*/notebooks/*.ipynb
 // @match       https://www.joinquant.net/user/*/notebooks/*.ipynb
 // @license     MIT License
-// @require     https://cdn.rawgit.com/jed/domo/13c45aba3e94dd2d1bc469ce3339bbc1e3a10314/lib/domo.js
+// @require     https://cdn.jsdelivr.net/npm/domo@0.5.9/lib/domo.js
 // @grant       none
 // ==/UserScript==
 
