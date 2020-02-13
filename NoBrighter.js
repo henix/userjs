@@ -3,7 +3,7 @@
 // @namespace   https://github.com/henix/userjs/NoBrighter
 // @description Change element's background color that is too bright to a light green.
 // @author      henix
-// @version     20160608.1
+// @version     20200213.1
 // @include     http://*
 // @include     https://*
 // @exclude     http://boards.4chan.org/*
@@ -53,7 +53,9 @@
 
 /* Green */
 // var targetColor = '#C7EDCC'; // 93
-var targetColor = '#C1E6C6'; // 90
+// var targetColor = '#C1E6C6'; // 90
+
+var targetColor = '#EEEEEE';
 
 /* Wheat */
 // var targetColor = '#E6D6B8'; // 90
