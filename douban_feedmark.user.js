@@ -3,15 +3,10 @@
 // @namespace   https://github.com/henix/userjs/douban_feedmark
 // @description You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author      henix
-// @version     20151122.1
+// @version     20200412.1
 // @include     http://www.douban.com/*
 // @include     https://www.douban.com/*
 // @license     MIT License
-// @require     https://cdnjs.cloudflare.com/ajax/libs/dom4/1.5.1/dom4.js
-// @grant       GM_getValue
-// @grant       GM_setValue
-// @grant       GM_deleteValue
-// @grant       GM_addStyle
 // ==/UserScript==
 
 /**
@@ -30,38 +25,22 @@
  * 		Version 0.1
  */
 
-// Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
-// For all details and docs: https://github.com/paulmillr/array.prototype.find
-(function(globals){
-  if (Array.prototype.find) return;
-
-  var find = function(predicate) {
-    var list = Object(this);
-    var length = list.length < 0 ? 0 : list.length >>> 0; // ES.ToUint32;
-    if (length === 0) return undefined;
-    if (typeof predicate !== 'function' || Object.prototype.toString.call(predicate) !== '[object Function]') {
-      throw new TypeError('Array#find: predicate must be a function');
-    }
-    var thisArg = arguments[1];
-    for (var i = 0, value; i < length; i++) {
-      value = list[i];
-      if (predicate.call(thisArg, value, i, list)) return value;
-    }
-    return undefined;
-  };
-
-  if (Object.defineProperty) {
-    try {
-      Object.defineProperty(Array.prototype, 'find', {
-        value: find, configurable: true, enumerable: false, writable: true
-      });
-    } catch(e) {}
+function insertSheet(ruleString, atstart) {
+  var head = document.getElementsByTagName("head")[0];
+  var style = document.createElement("style");
+  var rules = document.createTextNode(ruleString);
+  style.type = "text/css";
+  if(style.styleSheet) {
+    style.styleSheet.cssText = rules.nodeValue;
+  } else {
+    style.appendChild(rules);
   }
-
-  if (!Array.prototype.find) {
-    Array.prototype.find = find;
+  if (atstart) {
+    head.insertBefore(style, head.children[0]);
+  } else {
+    head.appendChild(style);
   }
-})(this);
+}
 
 var curMark;
 
@@ -78,6 +57,10 @@ function demarkItem() {
   curMark = null;
 }
 
+function getStatusId(e) {
+  return e.getAttribute("data-sid") || e.getAttribute("data-aid");
+}
+
 function clickHandler(e) {
   if (!e) e = window.event;
   if (!e.ctrlKey) {
@@ -89,14 +72,14 @@ function clickHandler(e) {
   }
   if (curMark !== this) {
     markItem(this);
-    GM_setValue('feedmarkid', this.getAttribute('data-sid'));
+    localStorage.setItem("feedmarkid", getStatusId(this));
   } else {
     demarkItem();
-    GM_deleteValue('feedmarkid');
+    localStorage.removeItem("feedmarkid");
   }
 }
 
-GM_addStyle(
+insertSheet(
 ".feedmarker, .feedmarker-old { border: 1px dashed black }" +
 ".feedmarker-old { border-top: 20px solid #ff6 }" +
 ".feedmarker { border-top: 20px solid #ccc }"
@@ -104,9 +87,9 @@ GM_addStyle(
 
 var stitems = Array.prototype.slice.call(document.querySelectorAll("div.status-item"));
 
-var oldId = GM_getValue('feedmarkid');
+var oldId = localStorage.getItem('feedmarkid');
 if (oldId) {
-  var item = stitems.find(function(e) { return e.getAttribute("data-sid") == oldId; });
+  var item = stitems.find(function(e) { return getStatusId(e) == oldId; });
   if (item) {
     item.classList.add("feedmarker-old");
   }
