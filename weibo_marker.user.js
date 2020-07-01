@@ -3,14 +3,12 @@
 // @namespace   https://github.com/henix/userjs/weibo_marker
 // @description You can place a marker on the last newsfeed you have read, so it can be found easily next time. Ctrl-Click on an item to mark it, again to remove the mark.
 // @author      henix
-// @version     20170817.1
+// @version     20200701.1
 // @include     http://weibo.com/*
 // @include     https://weibo.com/*
 // @include     http://www.weibo.com/*
 // @include     https://www.weibo.com/*
 // @license     MIT License
-// @require     https://cdnjs.cloudflare.com/ajax/libs/dom4/1.5.1/dom4.js
-// @grant       GM_addStyle
 // ==/UserScript==
 
 /**
@@ -50,38 +48,22 @@
  * 		Version 0.1
  */
 
-// Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
-// For all details and docs: https://github.com/paulmillr/array.prototype.find
-(function(globals){
-  if (Array.prototype.find) return;
-
-  var find = function(predicate) {
-    var list = Object(this);
-    var length = list.length < 0 ? 0 : list.length >>> 0; // ES.ToUint32;
-    if (length === 0) return undefined;
-    if (typeof predicate !== 'function' || Object.prototype.toString.call(predicate) !== '[object Function]') {
-      throw new TypeError('Array#find: predicate must be a function');
-    }
-    var thisArg = arguments[1];
-    for (var i = 0, value; i < length; i++) {
-      value = list[i];
-      if (predicate.call(thisArg, value, i, list)) return value;
-    }
-    return undefined;
-  };
-
-  if (Object.defineProperty) {
-    try {
-      Object.defineProperty(Array.prototype, 'find', {
-        value: find, configurable: true, enumerable: false, writable: true
-      });
-    } catch(e) {}
+function insertSheet(ruleString, atstart) {
+  var head = document.getElementsByTagName("head")[0];
+  var style = document.createElement("style");
+  var rules = document.createTextNode(ruleString);
+  style.type = "text/css";
+  if(style.styleSheet) {
+    style.styleSheet.cssText = rules.nodeValue;
+  } else {
+    style.appendChild(rules);
   }
-
-  if (!Array.prototype.find) {
-    Array.prototype.find = find;
+  if (atstart) {
+    head.insertBefore(style, head.children[0]);
+  } else {
+    head.appendChild(style);
   }
-})(this);
+}
 
 var curMark;
 
@@ -158,7 +140,7 @@ function whenExists(query, f) {
 }
 
 if (document.querySelector("div.WB_miniblog")) {
-  GM_addStyle(CSS);
+  insertSheet(CSS);
   whenExists(function() { return document.querySelector("div.WB_feed"); }, function(feedlist) {
     feedlist.addEventListener('click', clickHandler);
     var oldId = localStorage.getItem('feedmarkid');
