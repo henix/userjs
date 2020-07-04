@@ -80,7 +80,7 @@ FollowDetails.prototype.repaint = function(data) {
   for (var a of rebalances.list.filter(function(o) { return o.updated_at > lastday && (o.status == "success" || o.status == "pending"); })) {
     var utime = new Date(a.updated_at);
     trs.push(TR(TD({ colspan: 4 }, utime.getFullYear() + "-" + (utime.getMonth()+1) + "-" + utime.getDate() + " " + utime.getHours() + ":" + pad2(utime.getMinutes()) + ":" + pad2(utime.getSeconds()) + (a.status == "pending" ? "（待成交）" : ""))));
-    for (var r of a.rebalancing_histories) {
+    a.rebalancing_histories.forEach(function(r) {
       var prev_weight = r.prev_weight_adjusted || 0;
       var delta = r.target_weight - prev_weight;
       var price = r.price || cur_prices[r.stock_symbol];
@@ -98,7 +98,7 @@ FollowDetails.prototype.repaint = function(data) {
         TD(delta ? (price ? (price + (r.price ? ((buyfactor != 1 && delta > 0) ? (" / " + Math.round(price * buyfactor * 1000) / 1000) : "") : "（当前价）")) : "正在获取") : "无"),
         TD(delta ? (price ? (myround(quantity) + ((buyfactor != 1 && delta > 0) ? (" / " + Math.round(quantity / buyfactor)) : "")) : "正在获取") : "无")
       ));
-    }
+    });
   }
   frag.appendChild(TABLE.apply(null, trs));
 
